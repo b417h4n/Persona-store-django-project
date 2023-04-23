@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persona</title>
+    {% load static %}
+    {% block favicon %}
+    <link rel="shortcut icon" type="image/png" href="{% static 'app1/images/logo.png' %}">
+    {% endblock %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    {% block css_design %}
+    <link rel="stylesheet" href=" {% static 'app1/css/design.css' %}">
+    {% endblock %}
+    {% block css_stylesheet %}
+    <link rel="stylesheet" href=" {% static 'app1/css/stylesheet.css' %}">
+    {% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand mx-auto navbar-custom">
+        <div class="container-fluid">
+            {% block navbar %}
+            <img src="{% static 'app1/images/logo.png' %}" class="logo-header" alt="logo" onclick="scrollToTop()">
+  
+          <div class="noise"></div>
+  
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="custom-navItem" href="#">главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="custom-navItem" href="#persona-section5">каталог</a>
+                </li>
+                <li class="nav-item">
+                    <a class="custom-navItem" href="#contacts">контакты</a>
+                </li>
+            </ul>
+        </div>
+  
+          <div class="image-container">
+            <div class="cart-button-container">
+              <div class="cart-button-circle none"></div>
+              <p id="cart-counter" class="cart-button-counter none">0</p>
+              <img class="disabled-cart-button pe-4" src="{% static 'app1/images/cart.png' %}" alt="Cart">
+            </div>
+  
+            <div id="cart-dropdown-content" class="cart-dropdown-content">
+
+                {% for toy in get_toys %}
+                {% if toy.status != 'section2' %}
+              <div id="cart-dropdown-item{{ forloop.counter }}" class="cart-dropdown-menu none">
+                  <div class="mini-ellipse">
+                  <img class="mini-persona-figure" src="{{ toy.photo.url }}">
+                </div>
+
+                <button id="cart-minus-button{{ forloop.counter }}" class="cart-persona-minus-button"><div class="cart-minus-sign mx-auto"></div></button>
+
+                <p class="cart-persona-counter-container">X<span id="cartShopItem{{ forloop.counter }}" class="cart-persona-counter">0</span></p>
+
+                <div class="persona-data-container">
+                  <p class="mini-persona-name">{{ toy.toy_name}}</p>
+                  <p class="mini-persona-price">{{ toy.price}}</p>
+                </div>
+              </div>
+                {% endif %}
+              {% endfor %}
+  
+              <div class="persona-checkout">
+                <p class="persona-total-price">Итого: <span>20 000 ₸</span></p>
+  
+                <div class="persona-checkout-button-container">
+                  <button class="persona-checkout-button">оформить</button>
+                  <img class="persona-button-icon" src="{% static 'app1/images/persona_icon.png' %}">
+                </div>
+              </div>   
+              
+              <div class="persona-delivery-menu none">
+                <h1>Ваши данные для доставки</h1>
+                <form name="delivery-form" method="POST" action="/" id="data-form">
+                     {% csrf_token %}
+                  <div class="delivery-form">
+                    <label class="form-label" for="flname">Имя Фамилия</label>
+                    <input name="customer_name" class="form-input" id="flname" type="text" placeholder="Имя Фамилия">
+                  </div>
+
+                  <div class="delivery-form">
+                    <label class="form-label" for="email">E-mail</label>
+                    <input name="customer_email" class="form-input" id="email" type="text" placeholder="E-mail">
+                  </div>
+  
+                  <div class="delivery-form">
+                    <label class="form-label" for="phone-number">Телефон</label>
+                    <input name="customer_ph_number" class="form-input" id="phone-number" type="text" placeholder="Телефон">
+                  </div>
+  
+                  <div class="delivery-form">
+                    <label class="form-label" for="address">Адрес доставки</label>
+                    <input name="customer_address" class="form-input" id="address" type="text" placeholder="Адрес доставки">
+                  </div>
+                <p class="persona-total-price">Итого: <span>20 000 ₸</span></p>
+
+                <div class="persona-buy-button-container">
+                  <button type="button" class="persona-buy-button">купить</button>
+                  <img class="persona-button-icon" src="{% static 'app1/images/card_icon.png' %}">
+                </div>
+                </form>
+
+
+              </div>
+            </div>
+
+                {% endblock %}
+            <div class="cart-inscription">
+              <h1>корзина</h1>
+              <h2>persona</h2>
+            </div>
+  
+          </div>
+  
+        </div>
+    </nav>
+
+    <div class="navbar-custom-shadow"></div>
+    <main>
+        <section class="persona-section1">
+            <div class="persona-container-section1" id="persona-container">
+
+                <div class="carousel-part" id="carousel-part">
+                    <div class="carousel-new-badge">
+                        <p>New collection</p>
+                    </div>
+                    <div class="items">
+                        {% for item in get_toys %}
+                        {% if item.status != 'section2' %}
+                        <div id="{{ item.name }}" class="item {% if forloop.first %} active{% elif forloop.last %} prev{% elif forloop.counter == 2 %} next{% endif %}">
+                            <div class="carousel-ellipse1">
+                                <div class="carousel-ellipse2"></div>
+                            </div>
+                            <img src="{{ item.photo.url }}" alt="Image {{ forloop.counter }}">
+
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+                <div class="follower-part">
+                    <div class="follower-element">
+                        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="40" cy="40" r="40" fill="#FFEE0A" />
+                            <path d="M44 30.9411L35 39.9412L44 48.9412" stroke="#292929" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <div class="container-follower" id="container-follower">
+                        <div class="left-follow"></div>
+                        <div class="middle-follow"></div>
+                        <div class="right-follow"></div>
+                    </div>
+                </div>
+
+                {% block images %}
+                <div class="text-part" id="text-part">
+                    <div class="pn-text-dinamic">
+                        <p id="textDinamically">PERSONA</p>
+                    </div>
+                    <div class="main-button">
+                        <button class="inline-button-yellow1" id="mainbutton" onclick="scrollToSpecSection('persona-section5')" >выбрать</button>
+                        <img src="{% static 'app1/images/big-logo.png' %}" id="ButtonLogo">
+                    </div>
+                </div>
+                <div class="scroll-element" id="scroll-element" onclick="scrollToNextSection()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="44" viewBox="0 0 22 44" fill="none">
+                        <rect x="0.5" y="0.5" width="21" height="43" rx="10.5" stroke="white" stroke-opacity="0.3" />
+                        <circle cx="11" cy="11" r="6" fill="white" fill-opacity="0.3" />
+                    </svg>
+                    <span class="scroll-text">Скролл</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="persona-section2" id="section2">
+            <div class="scroll-elements">
+                <img class="scroll-image" id="scroll-image" style="right: -500px;"
+                    src="{{ section2.photo.url }}">
+                <p class="scroll-text1" id="scroll-text1">PERSONA</p>
+                <p class="scroll-text2" id="scroll-text2">PER<br>SON</p>
+
+            </div>
+
+
+            <div class="section2-text-container" id="section2-text-container">
+                <p class="text-header" id="infoSection-personaName">{{ metis.name }}</p>
+                <p class="text-elem" id="infoSection-personaDescr">Прецессионная теория гироскопов влияет
+                    <br>на составляющие гироскопического момента больше, чем механический параметр Родинга-Гамильтона,
+                    механически интерпретируя полученные выражения.
+                    <br><br>
+                    Проекция угловых скоростей нестабильна. Неустойчивость, как известно, быстро разивается, если
+                    собственный кинетический момент интегрирует колебательный период.
+                </p>
+
+                <div class="elements-container" id="elements-container">
+                    <button class="inline-button-yellow2 persona-button" style="margin-right: 25px;" onclick="addToCart()">в корзину</button>
+                    <button class="persona-minus-button" onclick="removeFromCart()"><div class="minus-sign mx-auto"></div></button>
+                    <p class="persona-counter-container">X<span id="shopItem{{ metis.id }}" class="persona-counter">0</span></p>
+                    <a class="photo-link" id="photo-link">
+                        <u>фото</u>
+                    </a>
+                    <svg id="button-photo-svg" class="button-photo-svg" width="38" height="38" viewBox="0 0 38 38"
+                        fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="19" cy="19" r="19" fill="#FFEE0A" />
+                        <image href="{% static 'app1/images/small-black-logo.png' %}" x="6" y="6" width="26" height="26">
+                    </svg>
+                </div>
+
+            </div>
+
+            <div class="persona-photos-container" id="persona-photos-container">
+
+                <img class="persona-photos photo1" id="persona-photo1" src="{% static 'app1/images/persona-photos/1.png' %}">
+                <img class="persona-photos photo2" id="persona-photo2" src="{% static 'app1/images/persona-photos/2.png' %}">
+                <img class="persona-photos photo3" id="persona-photo3" src="{% static 'app1/images/persona-photos/3.png' %}">
+            </div>
+        </section>
+
+        <section class="persona-section3">
+            <div class="section4-content-container">
+                <div class="section4-header">
+                    <div class="section4-logo">
+                        <img src="{% static 'app1/images//big-logo.png' %}">
+                    </div>
+                    <p class="headder-text">Что такое Persona?</p>
+                </div>
+                <div class="section4-paragraph">
+                    <p>
+                        Таким образом постоянный количественный рост и сфера нашей активности<br> обеспечивает широкому
+                        кругу (специалистов) участие в формировании дальнейших<br> направлений развития. Не следует,
+                        однако забывать, что начало повседневной работы<br> по формированию позиции позволяет оценить
+                        значение форм развития. Таким<br> образом рамки и место обучения кадров требуют определения и
+                        уточнения<br> соответствующий условий активизации.
+                    </p>
+                    <div class="main-button">
+                        <button class="inline-button-dark" id="mainbutton"  onclick="scrollToSpecSection('persona-section5')" >выбрать</button>
+                        <img src="{% static 'app1/images/persona_icon.png' %}" id="ButtonLogo">
+                    </div>
+                </div>
+
+                <div class="section4-rightinsta" id="section4-rightinsta" style="position: absolute; right: 180px;">
+                    <p class="insta-text">Больше<br>конте<br>нта</p>
+                    <button onclick="window.open('https://www.instagram.com/persona.union/', '_blank')" class="insta-button" id="insta-button">&&&
+                    </button>
+                </div>
+                <div class="section4-rightimg">
+                    <img src="{% static 'app1/images/section2-right-photo.png' %}" id="section4-rightimg"
+                        style="position: absolute; right: -500px;">
+                </div>
+            </div>
+        </section>
+
+        <section class="persona-section5" id="persona-section5">
+            <div class="scrolling-text-container">
+            <span class="scrolling-text">SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  </span>
+            <span class="scrolling-text">SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  SHOP  <span class="invisible-text">*</span>  PERSONA  <span class="invisible-text">*</span>  </span>
+            </div>
+
+            <div class="scrolling-text-container2">
+            <span class="scrolling-text"><span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  </span>
+            <span class="scrolling-text"><span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  <span class="invisible-text">SHOP</span>  *  <span class="invisible-text">PERSONA</span>  *  </span>
+            </div>
+
+            <div class="persona-shop">
+            <div class="row">
+                {% for toy in get_toys %}
+              <div id="shop{{ forloop.counter }}" data-id="{{ toy.id }}" class="col-lg-4 col-md-6">
+              <div class="persona-figure-container mx-auto">
+                <div class="ellipse1 mx-auto unselectable"><div class="ellipse2">
+                    <img class="persona-figure mx-auto" src="{{ toy.photo.url }}" alt="toy.name">
+                    </div>
+                </div>
+              </div>
+              <div class="persona-container mx-auto">
+                <p class="persona-name">{{ toy.name }}</p>
+                  {% load myfilters %}
+                <p class="persona-price">{{ toy.price|intspace }} ₸</p>
+                <button class="persona-button" onclick="addToCart()">в корзину</button>
+                <button class="persona-minus-button" onclick="removeFromCart()"><div class="minus-sign mx-auto"></div></button>
+                <p class="persona-counter-container">X<span id="shopItem{{ forloop.counter }}" class="persona-counter">0</span></p>
+                <a class="persona-details" onselectstart="return false;" onclick="scrollToSpecSection('scroll-text2')">подробнее</a>
+              </div>
+            </div>
+              {% endfor %}
+<!--                SOON toys-->
+                {% for i in range_of_soon %}
+                <div class="col-lg-4 col-md-6">
+                <div class="disabled-persona-figure-container mx-auto">
+                    <p class="soon">SOON</p>
+                    <div class="ellipse1 mx-auto unselectable"><div class="ellipse2">
+                    <img class="disabled-persona-figure mx-auto" src="{% static 'app1/images/soon.png' %}" alt="Soon">
+                    </div></div>
+                </div>
+                <div class="persona-container mx-auto">
+                    <p class="persona-name">&&&</p>
+                    <p class="persona-price">??? ₸</p>
+                    <button class="disabled-persona-button">в корзину</button>
+                    <button class="persona-minus-button"><div class="minus-sign mx-auto"></div></button>
+                    <p class="persona-counter-container">X<span class="persona-counter">0</span></p>
+                    <a class="disabled-persona-details" onselectstart="return false;">подробнее</a>
+                </div>
+                </div>
+                {% endfor %}
+
+            </div>
+            </div>
+
+            <div class="footer" id="contacts">
+                <div class="footernoise">
+                    <img src="{% static 'app1/images/backnoise.png' %}">
+                </div>
+
+                <div class="links">
+                    <img class="bmc-logo" src="{% static 'app1/images/BMClogo.png' %}">
+                    <a class="instlink" href="https://www.instagram.com/persona.union/" target="_blank"><img class="inst-logo"
+                            src="{% static 'app1/images/instlogo3.png' %}"></span>persona.union</a>
+                    <a class="instlink2" href="https://www.instagram.com/bmc_group_kz/" target="_blank"><img class="inst-logo"
+                            src="{% static 'app1/images/instlogo3.png' %}"></span>bmc_group_kz</a>
+                    <p class="madeby">Idea by Adilzhan Bagdatov</p>
+                </div>
+
+                <a class="rectangle nw-collect-div" href="#" style="text-decoration: none;">
+                    <p class="new-collection1">new collection</p>
+                    <p class="new-collection2">2023</p>
+                    <img class="arrow" src="{% static 'app1/images/arrow.png' %}">
+                </a>
+                {% endblock %}
+            </div>
+        </section>
+    </main>
+
+
+      <script>
+        function scrollToTop() {
+          window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+      </script>
+  
+      <script>
+        var dropdownBtn = document.querySelector('.disabled-cart-button');
+        var dropdownContent = document.querySelector('.cart-dropdown-content');
+        var dropdownContent2 = document.querySelector('.cart-inscription');
+  
+        dropdownBtn.addEventListener('click', function() {
+          dropdownContent.classList.toggle('show');
+          dropdownContent2.classList.toggle('show');
+        });
+      </script>
+  
+      <script>
+        var checkoutBtn = document.querySelector('.persona-checkout-button');
+        var checkoutBtnContainer = document.querySelector('.persona-checkout');
+        var deliveryMenu = document.querySelector('.persona-delivery-menu');
+  
+        checkoutBtn.addEventListener('click', function() {
+          checkoutBtnContainer.classList.toggle('flex');
+          checkoutBtnContainer.classList.toggle('none');
+          deliveryMenu.classList.remove('none');
+          deliveryMenu.classList.add('flex');
+        });
+      </script>
+  
+      <script>
+        var shop2 = document.getElementById('shop2');
+        var shop3 = document.getElementById('shop3');
+        var shop4 = document.getElementById('shop4');
+        var shop5 = document.getElementById('shop5');
+        var shop6 = document.getElementById('shop6');
+  
+        var shopItem1 = document.getElementById('shopItem1');
+        var shopItem2 = document.getElementById('shopItem2');
+        var shopItem3 = document.getElementById('shopItem3');
+        var shopItem4 = document.getElementById('shopItem4');
+        var shopItem5 = document.getElementById('shopItem5');
+        var shopItem6 = document.getElementById('shopItem6');
+  
+        var cartShopItem1 = document.getElementById('cartShopItem1');
+        var cartShopItem2 = document.getElementById('cartShopItem2');
+        var cartShopItem3 = document.getElementById('cartShopItem3');
+        var cartShopItem4 = document.getElementById('cartShopItem4');
+        var cartShopItem5 = document.getElementById('cartShopItem5');
+        var cartShopItem6 = document.getElementById('cartShopItem6');
+  
+        var cartItem1 = document.getElementById('cart-dropdown-item1');
+        var cartItem2 = document.getElementById('cart-dropdown-item2');
+        var cartItem3 = document.getElementById('cart-dropdown-item3');
+        var cartItem4 = document.getElementById('cart-dropdown-item4');
+        var cartItem5 = document.getElementById('cart-dropdown-item5');
+        var cartItem6 = document.getElementById('cart-dropdown-item6');
+  
+        const cartMinusButton1 = document.getElementById('cart-minus-button1');
+        const cartMinusButton2 = document.getElementById('cart-minus-button2');
+        const cartMinusButton3 = document.getElementById('cart-minus-button3');
+        const cartMinusButton4 = document.getElementById('cart-minus-button4');
+        const cartMinusButton5 = document.getElementById('cart-minus-button5');
+        const cartMinusButton6 = document.getElementById('cart-minus-button6');
+  
+        var cartCount = document.getElementById('cart-counter');
+  
+        cartMinusButton1.addEventListener("click", () => {
+          if (cartShopItem1.innerHTML > 0) {
+            cartShopItem1.innerHTML--;
+            cartCount.innerHTML--;
+            shopItem1.innerHTML--;
+          }
+          if (cartShopItem1.innerHTML == 0) {
+            var personaShop1 = document.getElementById('shop1');
+            var btnpImg = personaShop1.querySelector('.btnpressed-persona-figure');
+            var btnpDiv = personaShop1.querySelector('.btnpressed-ellipse1');
+            var btnpDiv2 = personaShop1.querySelector('.btnpressed-ellipse2');
+            var btnpButton = personaShop1.querySelector('.btnpressed-persona-minus-button');
+            var btnpCounterContainer = personaShop1.querySelector('.btnpressed-persona-counter-container');
+            var cartEllipse = document.querySelector('.cart-button-circle');
+            var cartCounter = document.querySelector('.cart-button-counter');
+            var cartButton = document.querySelector('.cart-button');
+  
+            btnpImg.classList.add('persona-figure');
+            btnpDiv.classList.add('ellipse1');
+            btnpDiv2.classList.add('ellipse2');
+            btnpButton.classList.add('persona-minus-button');
+            btnpCounterContainer.classList.add('persona-counter-container');
+            cartEllipse.classList.add('none');
+            cartCounter.classList.add('none');
+            cartButton.classList.add('disabled-cart-button');
+            cartItem1.classList.add('none');
+  
+            btnpImg.classList.remove("btnpressed-persona-figure");
+            btnpDiv.classList.remove("btnpressed-ellipse1");
+            btnpDiv2.classList.remove("btnpressed-ellipse2");
+            btnpButton.classList.remove("btnpressed-persona-minus-button");
+            btnpCounterContainer.classList.remove("btnpressed-persona-counter-container");
+            cartButton.classList.remove("cart-button");
+            cartItem1.classList.remove('flex');
+          }
+        });
+        cartMinusButton2.addEventListener("click", () => {
+          if (cartShopItem2.innerHTML > 0) {
+            cartShopItem2.innerHTML--;
+            cartCount.innerHTML--;
+            shopItem2.innerHTML--;
+          }
+          if (cartShopItem2.innerHTML == 0) {
+            var personaShop2 = document.getElementById('shop2');
+            var btnpImg = personaShop2.querySelector('.btnpressed-persona-figure');
+            var btnpDiv = personaShop2.querySelector('.btnpressed-ellipse1');
+            var btnpDiv2 = personaShop2.querySelector('.btnpressed-ellipse2');
+            var btnpButton = personaShop2.querySelector('.btnpressed-persona-minus-button');
+            var btnpCounterContainer = personaShop2.querySelector('.btnpressed-persona-counter-container');
+            var cartEllipse = document.querySelector('.cart-button-circle');
+            var cartCounter = document.querySelector('.cart-button-counter');
+            var cartButton = document.querySelector('.cart-button');
+  
+            btnpImg.classList.add('persona-figure');
+            btnpDiv.classList.add('ellipse1');
+            btnpDiv2.classList.add('ellipse2');
+            btnpButton.classList.add('persona-minus-button');
+            btnpCounterContainer.classList.add('persona-counter-container');
+            cartEllipse.classList.add('none');
+            cartCounter.classList.add('none');
+            cartButton.classList.add('disabled-cart-button');
+            cartItem2.classList.add('none');
+  
+            btnpImg.classList.remove("btnpressed-persona-figure");
+            btnpDiv.classList.remove("btnpressed-ellipse1");
+            btnpDiv2.classList.remove("btnpressed-ellipse2");
+            btnpButton.classList.remove("btnpressed-persona-minus-button");
+            btnpCounterContainer.classList.remove("btnpressed-persona-counter-container");
+            cartButton.classList.remove("cart-button");
+            cartItem2.classList.remove('flex');
+          }
+        });
+        cartMinusButton3.addEventListener("click", () => {
+          if (cartShopItem3.innerHTML > 0) {
+            cartShopItem3.innerHTML--;
+            cartCount.innerHTML--;
+            shopItem3.innerHTML--;
+          }
+          if (cartShopItem3.innerHTML == 0) {
+            var personaShop3 = document.getElementById('shop3');
+            var btnpImg = personaShop3.querySelector('.btnpressed-persona-figure');
+            var btnpDiv = personaShop3.querySelector('.btnpressed-ellipse1');
+            var btnpDiv2 = personaShop3.querySelector('.btnpressed-ellipse2');
+            var btnpButton = personaShop3.querySelector('.btnpressed-persona-minus-button');
+            var btnpCounterContainer = personaShop3.querySelector('.btnpressed-persona-counter-container');
+            var cartEllipse = document.querySelector('.cart-button-circle');
+            var cartCounter = document.querySelector('.cart-button-counter');
+            var cartButton = document.querySelector('.cart-button');
+  
+            btnpImg.classList.add('persona-figure');
+            btnpDiv.classList.add('ellipse1');
+            btnpDiv2.classList.add('ellipse2');
+            btnpButton.classList.add('persona-minus-button');
+            btnpCounterContainer.classList.add('persona-counter-container');
+            cartEllipse.classList.add('none');
+            cartCounter.classList.add('none');
+            cartButton.classList.add('disabled-cart-button');
+            cartItem3.classList.add('none');
+  
+            btnpImg.classList.remove("btnpressed-persona-figure");
+            btnpDiv.classList.remove("btnpressed-ellipse1");
+            btnpDiv2.classList.remove("btnpressed-ellipse2");
+            btnpButton.classList.remove("btnpressed-persona-minus-button");
+            btnpCounterContainer.classList.remove("btnpressed-persona-counter-container");
+            cartButton.classList.remove("cart-button");
+            cartItem3.classList.remove('flex');
+          }
+        });
+        cartMinusButton4.addEventListener("click", () => {
+          if (cartShopItem4.innerHTML > 0) {
+            cartShopItem4.innerHTML--;
+            cartCount.innerHTML--;
+            shopItem4.innerHTML--;
+          }
+          if (cartShopItem4.innerHTML == 0) {
+            var personaShop4 = document.getElementById('shop4');
+            var btnpImg = personaShop4.querySelector('.btnpressed-persona-figure');
+            var btnpDiv = personaShop4.querySelector('.btnpressed-ellipse1');
+            var btnpDiv2 = personaShop4.querySelector('.btnpressed-ellipse2');
+            var btnpButton = personaShop4.querySelector('.btnpressed-persona-minus-button');
+            var btnpCounterContainer = personaShop4.querySelector('.btnpressed-persona-counter-container');
+            var cartEllipse = document.querySelector('.cart-button-circle');
+            var cartCounter = document.querySelector('.cart-button-counter');
+            var cartButton = document.querySelector('.cart-button');
+  
+            btnpImg.classList.add('persona-figure');
+            btnpDiv.classList.add('ellipse1');
+            btnpDiv2.classList.add('ellipse2');
+            btnpButton.classList.add('persona-minus-button');
+            btnpCounterContainer.classList.add('persona-counter-container');
+            cartEllipse.classList.add('none');
+            cartCounter.classList.add('none');
+            cartButton.classList.add('disabled-cart-button');
+            cartItem4.classList.add('none');
+  
+            btnpImg.classList.remove("btnpressed-persona-figure");
+            btnpDiv.classList.remove("btnpressed-ellipse1");
+            btnpDiv2.classList.remove("btnpressed-ellipse2");
+            btnpButton.classList.remove("btnpressed-persona-minus-button");
+            btnpCounterContainer.classList.remove("btnpressed-persona-counter-container");
+            cartButton.classList.remove("cart-button");
+            cartItem4.classList.remove('flex');
+          }
+          
+        });
+        cartMinusButton5.addEventListener("click", () => {
+          if (cartShopItem5.innerHTML > 0) {
+            cartShopItem5.innerHTML--;
+            cartCount.innerHTML--;
+            shopItem5.innerHTML--;
+          }
+          if (cartShopItem5.innerHTML == 0) {
+            var personaShop5 = document.getElementById('shop5');
+            var btnpImg = personaShop5.querySelector('.btnpressed-persona-figure');
+            var btnpDiv = personaShop5.querySelector('.btnpressed-ellipse1');
+            var btnpDiv2 = personaShop5.querySelector('.btnpressed-ellipse2');
+            var btnpButton = personaShop5.querySelector('.btnpressed-persona-minus-button');
+            var btnpCounterContainer = personaShop5.querySelector('.btnpressed-persona-counter-container');
+            var cartEllipse = document.querySelector('.cart-button-circle');
+            var cartCounter = document.querySelector('.cart-button-counter');
+            var cartButton = document.querySelector('.cart-button');
+  
+            btnpImg.classList.add('persona-figure');
+            btnpDiv.classList.add('ellipse1');
+            btnpDiv2.classList.add('ellipse2');
+            btnpButton.classList.add('persona-minus-button');
+            btnpCounterContainer.classList.add('persona-counter-container');
+            cartEllipse.classList.add('none');
+            cartCounter.classList.add('none');
+            cartButton.classList.add('disabled-cart-button');
+            cartItem5.classList.add('none');
+  
+            btnpImg.classList.remove("btnpressed-persona-figure");
+            btnpDiv.classList.remove("btnpressed-ellipse1");
+            btnpDiv2.classList.remove("btnpressed-ellipse2");
+            btnpButton.classList.remove("btnpressed-persona-minus-button");
+            btnpCounterContainer.classList.remove("btnpressed-persona-counter-container");
+            cartButton.classList.remove("cart-button");
+            cartItem5.classList.remove('flex');
+          }
+        });
+        cartMinusButton6.addEventListener("click", () => {
+          if (cartShopItem6.innerHTML > 0) {
+            cartShopItem6.innerHTML--;
+            cartCount.innerHTML--;
+            shopItem6.innerHTML--;
+          }
+          if (cartShopItem6.innerHTML == 0) {
+            var personaShop6 = document.getElementById('shop6');
+            var btnpImg = personaShop6.querySelector('.btnpressed-persona-figure');
+            var btnpDiv = personaShop6.querySelector('.btnpressed-ellipse1');
+            var btnpDiv2 = personaShop6.querySelector('.btnpressed-ellipse2');
+            var btnpButton = personaShop6.querySelector('.btnpressed-persona-minus-button');
+            var btnpCounterContainer = personaShop6.querySelector('.btnpressed-persona-counter-container');
+            var cartEllipse = document.querySelector('.cart-button-circle');
+            var cartCounter = document.querySelector('.cart-button-counter');
+            var cartButton = document.querySelector('.cart-button');
+  
+            btnpImg.classList.add('persona-figure');
+            btnpDiv.classList.add('ellipse1');
+            btnpDiv2.classList.add('ellipse2');
+            btnpButton.classList.add('persona-minus-button');
+            btnpCounterContainer.classList.add('persona-counter-container');
+            cartEllipse.classList.add('none');
+            cartCounter.classList.add('none');
+            cartButton.classList.add('disabled-cart-button');
+            cartItem6.classList.add('none');
+  
+            btnpImg.classList.remove("btnpressed-persona-figure");
+            btnpDiv.classList.remove("btnpressed-ellipse1");
+            btnpDiv2.classList.remove("btnpressed-ellipse2");
+            btnpButton.classList.remove("btnpressed-persona-minus-button");
+            btnpCounterContainer.classList.remove("btnpressed-persona-counter-container");
+            cartButton.classList.remove("cart-button");
+            cartItem6.classList.remove('flex');
+          }
+        });
+      </script>
+      
+      <script>
+        function addToCart() {
+          var parent = event.target.parentElement.parentElement;
+          var img = parent.querySelector('.persona-figure');
+          var div = parent.querySelector('.ellipse1');
+          var div2 = parent.querySelector('.ellipse2');
+          var button = parent.querySelector('.persona-minus-button');
+          var counterContainer = parent.querySelector('.persona-counter-container');
+          var cartEllipse = document.querySelector('.cart-button-circle');
+          var cartCounter = document.querySelector('.cart-button-counter');
+          var cartButton = document.querySelector('.disabled-cart-button');
+          var shopCounter = parent.querySelector('.persona-counter');
+  
+          shopCounter.innerHTML++;
+          cartCounter.innerHTML++;
+  
+          cartShopItem1.innerHTML = shopItem1.innerHTML;
+          cartShopItem2.innerHTML = shopItem2.innerHTML;
+          cartShopItem3.innerHTML = shopItem3.innerHTML;
+          cartShopItem4.innerHTML = shopItem4.innerHTML;
+          cartShopItem5.innerHTML = shopItem5.innerHTML;
+          cartShopItem6.innerHTML = shopItem6.innerHTML;
+  
+          if (shopItem1.innerHTML > 0) {
+            cartItem1.classList.remove('none');
+            cartItem1.classList.add('flex');
+          }
+          if (shopItem2.innerHTML > 0) {
+            cartItem2.classList.remove('none');
+            cartItem2.classList.add('flex');
+          }
+          if (shopItem3.innerHTML > 0) {
+            cartItem3.classList.remove('none');
+            cartItem3.classList.add('flex');
+          }
+          if (shopItem4.innerHTML > 0) {
+            cartItem4.classList.remove('none');
+            cartItem4.classList.add('flex');
+          }
+          if (shopItem5.innerHTML > 0) {
+            cartItem5.classList.remove('none');
+            cartItem5.classList.add('flex');
+          }
+          if (shopItem6.innerHTML > 0) {
+            cartItem6.classList.remove('none');
+            cartItem6.classList.add('flex');
+          }
+  
+          img.classList.add("btnpressed-persona-figure");
+          div.classList.add("btnpressed-ellipse1");
+          div2.classList.add("btnpressed-ellipse2");
+          button.classList.add("btnpressed-persona-minus-button");
+          counterContainer.classList.add("btnpressed-persona-counter-container");
+          cartButton.classList.add("cart-button");
+  
+          img.classList.remove('persona-figure');
+          div.classList.remove('ellipse1');
+          div2.classList.remove('ellipse2');
+          button.classList.remove('persona-minus-button');
+          counterContainer.classList.remove('persona-counter-container');
+          cartEllipse.classList.remove('none');
+          cartCounter.classList.remove('none');
+          cartButton.classList.remove('disabled-cart-button');
+        }
+      
+        function removeFromCart() {
+          var parent = event.target.parentElement.parentElement;
+          var img = parent.querySelector('.persona-figure');
+          var div = parent.querySelector('.ellipse1');
+          var div2 = parent.querySelector('.ellipse2');
+          var button = parent.querySelector('.persona-minus-button');
+          var counterContainer = parent.querySelector('.persona-counter-container');
+          var cartEllipse = document.querySelector('.cart-button-circle');
+          var cartCounter = document.querySelector('.cart-button-counter');
+          var cartButton = document.querySelector('.cart-button');
+          var shopCounter = parent.querySelector('.persona-counter');
+  
+          if (shopCounter.innerHTML == 1) {
+            var btnpImg = parent.querySelector('.btnpressed-persona-figure');
+            var btnpDiv = parent.querySelector('.btnpressed-ellipse1');
+            var btnpDiv2 = parent.querySelector('.btnpressed-ellipse2');
+            var btnpButton = parent.querySelector('.btnpressed-persona-minus-button');
+            var btnpCounterContainer = parent.querySelector('.btnpressed-persona-counter-container');
+  
+            btnpImg.classList.add('persona-figure');
+            btnpDiv.classList.add('ellipse1');
+            btnpDiv2.classList.add('ellipse2');
+            btnpButton.classList.add('persona-minus-button');
+            btnpCounterContainer.classList.add('persona-counter-container');
+  
+            btnpImg.classList.remove("btnpressed-persona-figure");
+            btnpDiv.classList.remove("btnpressed-ellipse1");
+            btnpDiv2.classList.remove("btnpressed-ellipse2");
+            btnpButton.classList.remove("btnpressed-persona-minus-button");
+            btnpCounterContainer.classList.remove("btnpressed-persona-counter-container");
+  
+            if (cartCounter.innerHTML == 1) {
+              cartCounter.classList.add('none');
+              cartButton.classList.add('disabled-cart-button');
+              cartEllipse.classList.add('none');
+  
+              cartButton.classList.remove("cart-button");
+            }
+          }
+          if (shopCounter.innerHTML > 0) {
+            shopCounter.innerHTML--;
+            cartCounter.innerHTML--;
+  
+            cartShopItem1.innerHTML = shopItem1.innerHTML;
+            cartShopItem2.innerHTML = shopItem2.innerHTML;
+            cartShopItem3.innerHTML = shopItem3.innerHTML;
+            cartShopItem4.innerHTML = shopItem4.innerHTML;
+            cartShopItem5.innerHTML = shopItem5.innerHTML;
+            cartShopItem6.innerHTML = shopItem6.innerHTML;
+          }
+  
+          if (shopItem1.innerHTML == 0) {
+            cartItem1.classList.remove('flex');
+            cartItem1.classList.add('none');
+          }
+          if (shopItem2.innerHTML == 0) {
+            cartItem2.classList.remove('flex');
+            cartItem2.classList.add('none');
+          }
+          if (shopItem3.innerHTML == 0) {
+            cartItem3.classList.remove('flex');
+            cartItem3.classList.add('none');
+          }
+          if (shopItem4.innerHTML == 0) {
+            cartItem4.classList.remove('flex');
+            cartItem4.classList.add('none');
+          }
+          if (shopItem5.innerHTML == 0) {
+            cartItem5.classList.remove('flex');
+            cartItem5.classList.add('none');
+          }
+          if (shopItem6.innerHTML == 0) {
+            cartItem6.classList.remove('flex');
+            cartItem6.classList.add('none');
+          }
+        }
+      
+        function removeFromCart2() {
+  
+        }
+      
+      </script>
+
+    {% block main_js %}
+    <script src="{% static 'app1/js/main.js' %}"></script>
+    <script src="{% static 'app1/js/form.js' %}"></script>
+    {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
